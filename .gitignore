@@ -1,0 +1,23 @@
+# raw/ 原文（PDF、网页抓取、视频转写稿）只在本机，不进 git、不推送；出处和校验值记在 raw/MANIFEST.md
+raw/**
+!raw/*/
+!raw/**/.gitkeep
+!raw/MANIFEST.md
+.claude/settings.local.json
+__pycache__/
+.obsidian/workspace*.json
+logs/
+.env
+.venv/
+tools/cc-connect/*.exe
+tools/cc-connect/*.zip
+tools/cc-connect/data/
+tools/cc-connect/.config.toml.lock
+feeds/state.json
+feeds/candidates/
+.cache/
+.secrets/
+vendor/
+tools/cc-connect/*.exe.*
+events/
+state/

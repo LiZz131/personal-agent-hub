@@ -1,0 +1,44 @@
+# 订阅源配置（示例）。scripts/poll_feeds.py 每天轮询：抓取 -> 去重 -> 关键词预筛（不调用模型）；
+# 之后由 daily-digest 定时任务交给模型，对照 interests.md 打分并推送简报。
+# Feed config (example). poll_feeds.py fetches -> dedups -> keyword-prefilters (no model calls);
+# the daily-digest job then scores candidates against interests.md.
+#
+# importance:
+#   normal —— 按兴趣打分，分数够高就进简报 / scored against interests, included if high enough
+#   major  —— 只在「大事件」时通知 / only notify on major events (new model, framework, tech report)
+
+arxiv:
+  # 只取 announce_type 为 new / cross 的新论文 / new + cross-listed papers only
+  categories: [cs.DC, cs.LG, cs.CL]
+  # 预筛：标题或摘要至少命中一个关键词（不区分大小写），按命中数取前 max_candidates 条
+  # Prefilter: at least one keyword in title/abstract (case-insensitive); keep top max_candidates by hits
+  max_candidates: 60
+  # 简报里最多列出几篇 / max arXiv papers in a digest
+  max_in_digest: 10
+  # 弱关键词：单独命中不算，只在已有强命中时参与排序 / weak keywords only count alongside a strong hit
+  weak_keywords: [kernel, scheduling, quantization]
+  keywords:
+    - llm inference
+    - serving system
+    - kv cache
+    - speculative decoding
+    - distributed training
+
+feeds:
+  - name: Example RSS blog
+    type: rss                     # rss | sitemap | hf_models | github_repos
+    url: https://example.com/feed.xml
+    importance: normal
+  - name: Example sitemap blog
+    type: sitemap                 # 没有 RSS 时从 sitemap 发现新文章 / discover posts from a sitemap
+    url: https://example.org/sitemap.xml
+    match: /blog/\d{4}-\d{2}-\d{2}-
+    importance: normal
+  - name: Some lab · Hugging Face
+    type: hf_models
+    author: some-org              # Hugging Face 组织名 / HF org name
+    importance: major
+  - name: Some lab · GitHub
+    type: github_repos
+    org: some-org                 # GitHub 组织名 / GitHub org
+    importance: major

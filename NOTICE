@@ -1,0 +1,10 @@
+Personal Agent Hub
+Copyright 2026 LiZz131
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+It is designed to run alongside, but does not include, the following third-party software:
+- Claude Code (Anthropic), installed separately by the user.
+- cc-connect, https://github.com/chenhg5/cc-connect, used via the fork
+  https://github.com/LiZz131/cc-connect (hub branch). Not vendored; built separately.
+- Python packages listed in requirements.txt (lark-oapi, PyYAML), installed with uv.

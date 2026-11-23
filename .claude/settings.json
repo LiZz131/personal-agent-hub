@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.venv/Scripts/python -I scripts/fetch.py:*)",
+      "Bash(.venv/Scripts/python -I scripts/lint.py:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "WebFetch",
+      "WebSearch"
+    ],
+    "deny": [
+      "Read(/.env)",
+      "Read(/.secrets/**)"
+    ],
+    "ask": [
+      "PowerShell(Remove-Item:*)"
+    ]
+  }
+}

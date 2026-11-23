@@ -1,0 +1,20 @@
+{
+  "//": "scripts/install.ps1 merges this block into ~/.claude/settings.json with your real hub path (example only; C:\\path\\to\\hub is a placeholder).",
+  "hooks": {
+    "SessionStart": [
+      {"hooks": [{"type": "command", "command": "C:\\path\\to\\hub\\.venv\\Scripts\\python.exe", "args": ["-I", "C:\\path\\to\\hub\\scripts\\cc_hook.py"], "timeout": 10}]}
+    ],
+    "UserPromptSubmit": [
+      {"hooks": [{"type": "command", "command": "C:\\path\\to\\hub\\.venv\\Scripts\\python.exe", "args": ["-I", "C:\\path\\to\\hub\\scripts\\cc_hook.py"], "timeout": 10}]}
+    ],
+    "Notification": [
+      {"hooks": [{"type": "command", "command": "C:\\path\\to\\hub\\.venv\\Scripts\\python.exe", "args": ["-I", "C:\\path\\to\\hub\\scripts\\cc_hook.py"], "timeout": 10}]}
+    ],
+    "Stop": [
+      {"hooks": [{"type": "command", "command": "C:\\path\\to\\hub\\.venv\\Scripts\\python.exe", "args": ["-I", "C:\\path\\to\\hub\\scripts\\cc_hook.py"], "timeout": 10}]}
+    ],
+    "SessionEnd": [
+      {"hooks": [{"type": "command", "command": "C:\\path\\to\\hub\\.venv\\Scripts\\python.exe", "args": ["-I", "C:\\path\\to\\hub\\scripts\\cc_hook.py"], "timeout": 10}]}
+    ]
+  }
+}

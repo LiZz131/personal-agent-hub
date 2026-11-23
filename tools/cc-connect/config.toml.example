@@ -1,0 +1,69 @@
+# cc-connect 配置模板（Personal Agent hub）。scripts/install.ps1 把 {{HUB}} 换成仓库路径（正斜杠），生成 config.toml。
+# cc-connect config template. scripts/install.ps1 renders it to config.toml, replacing {{HUB}} with the hub path.
+# 程序由 vendor\cc-connect（hub 分支，基于 v1.5.3）编译：scripts\build-cc-connect.ps1。不使用 /upgrade。
+# 密钥一律用 ${VAR} 引用环境变量，由启动器从 .env 注入；本文件不含明文密钥。
+
+language = "zh"
+# 会话数据放在仓库内（默认是 C:\Users\<你>\.cc-connect）
+data_dir = "{{HUB}}/tools/cc-connect/data"
+# agent 主动回传文件到飞书
+attachment_send = "on"
+
+[log]
+level = "info"
+
+[display]
+mode = "compact"          # 思考/工具进度合并显示，减少刷屏
+card_mode = "rich"        # 飞书 Card 2.0 富卡片
+thinking_max_len = 300
+tool_max_len = 300
+
+# 自定义命令会出现在 /help 卡片的「自定义命令」分组里（hub 分支的原生功能）。
+
+# 中文别名指向原生指令（/usage 在 hub 分支已修复 Windows 支持）
+[[aliases]]
+name = "用量"
+command = "/usage"
+
+[[aliases]]
+name = "帮助"
+command = "/help"
+
+# ============================================================
+
+[[projects]]
+name = "hub"
+reset_on_idle_mins = 0           # 不因空闲自动开新会话（cc-connect 默认 30 分钟）；由我用 /new /list /switch 手动管理
+admin_from = "${FEISHU_OWNER_OPEN_ID}"   # 只有你能用 /dir 等特权命令
+disabled_commands = ["shell", "upgrade", "restart"]   # 禁止从飞书直接执行 shell / 自升级
+
+[projects.agent]
+type = "claudecode"
+
+[projects.agent.options]
+work_dir = "{{HUB}}"
+# auto：由 Claude Code 的 auto 模式分类器判断，常规操作直接执行，只有高风险操作才在飞书里弹确认
+# （回复「允许」或点按钮）。.claude\settings.json 的 deny / ask 规则仍然优先生效
+mode = "auto"
+allowed_tools = [
+  "Read", "Grep", "Glob", "Edit", "Write",
+  "Bash(.venv/Scripts/python -I scripts/fetch.py:*)",
+  "Bash(.venv/Scripts/python -I scripts/lint.py:*)",
+  "Bash(.venv/Scripts/python -I scripts/poll_feeds.py:*)",
+  "Bash(cp:*)", "Bash(git status:*)", "Bash(git diff:*)", "Bash(git log:*)",
+  "WebFetch", "WebSearch",
+]
+append_system_prompt = "你正通过飞书与用户对话。回复会渲染为飞书卡片：用简洁 Markdown，避免超长表格。遵守工作目录下 CLAUDE.md 的全部约定。"
+
+model = "sonnet"
+
+[[projects.platforms]]
+type = "feishu"
+
+[projects.platforms.options]
+app_id = "${FEISHU_APP_ID}"
+app_secret = "${FEISHU_APP_SECRET}"
+allow_from = "${FEISHU_OWNER_OPEN_ID}"   # 只响应你本人；默认 "*" 是所有人，务必保留此行
+progress_style = "card"                  # 进度用一张持续更新的卡片展示
+ack_emoji = "Get"                        # 收到消息立即打表情
+done_emoji = "none"
